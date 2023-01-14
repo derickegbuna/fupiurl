@@ -1,0 +1,52 @@
+{%extends 'main.html'%}
+{%load static%}
+{%block content%}
+    <style>
+        .errorlist{
+        list-style-type:none;
+        }
+    </style>
+    <h6 style="color: gainsboro;">Welcome to Fupi URLs Shortener</h6>
+    <div class="col-sm-8 pt-1 pb-1"><h3 class="text-center" style="background-color:#fff; border-radius:5px; color:#003366;">Register and start shortening your links</h3></div>
+    <section class="container">
+        <div class="col-sm-8">
+            <div style="color:#000;" class="errorlist">
+                {%if form.username.errors%}
+                    <div class="text-center bg-light rounded">
+                        <i class="fa fa-warning" style="color: #ff0268;"></i>
+                        {{form.username.errors}}
+                    </div>
+                {%elif form.email.errors%}
+                    <div class="text-center bg-light rounded">
+                        <i class="fa fa-warning" style="color: #ff0268;"></i>
+                        {{form.email.errors}}
+                    </div>
+                {%elif form.password2.errors%}
+                    <div class="text-center bg-light rounded">
+                        <i class="fa fa-warning" style="color: #ff0268;"></i>
+                        {{form.password2.errors}}
+                    </div>
+                {%endif%}
+            </div>
+            <form method="POST">
+                {%csrf_token%}
+                <div class="row rounded pt-4" style="background-color:#fff;">
+                    <div class="col-md-6"><div class="row g-3 pt-3">{{form.username}}</div></div>
+                    <div class="col-md-6"><div class="row g-3 pt-3">{{form.email}}</div></div>
+                    <div class="col-md-6"><div class="row g-3 pt-3">{{form.password1}}</div></div>
+                    <div class="col-md-6"><div class="row g-3 pt-3">{{form.password2}}</div></div>
+                    <div class="col-md-6 pt-4"><div class="col-12"><input type="submit" name="Create User" class="btn btn-outline-light" value="Create Account" style="background-color:#003366;"></div></div>
+                    <div class="col-md-6">
+                        <div class="col-12">
+                            <div class="pb-4"><br>
+                                <h6 class="d-inline-block">Already have an account?</h6>
+                                <a href="{%url 'login'%}"><button type="button" style="background-color: #7492b9;" class="btn btn-outline-light">Login</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    <p>By clicking the Create Account button, you agree to our <span><a href="#" style="text-decoration: none;">Terms & Conditions, and Privacy Policy.</a></span></p>
+                </div>
+            </form>
+        </div>
+    </section>
+{%endblock content%}

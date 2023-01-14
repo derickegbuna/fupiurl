@@ -1,0 +1,114 @@
+{%extends 'main.html'%}
+{%load static%}
+{%block content%}
+<style>
+    @media screen and (max-width:767px){
+    }
+    div.scrollable{
+        width: auto;
+        height: 100%;
+        word-break: break-word;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <div class="container-fluid">
+        <a href="{%url 'tracklink'%}" class="navbar-brand btn" style="background-color: #003366; color: white;"><i class="fa fa-arrow-left"></i></a>
+        <h3>Insights</h3>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <div class="nav-link active" aria-current="page">Current plan: <span style="color: #003366; font-weight: bold;">Premium</span> <span></span></div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{%url 'logout'%}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav><br>
+<div class="container">
+    <div class="row">
+        <table class="table bg-light table-striped ">
+            <thead>
+                <tr>
+                    <div class="d-flex justify-content-around bg-light pt-2">
+                        <div class="text-white btn btn-sm" style="background-color:#003366; pointer-events: none;">
+                            Device Summary 
+                        </div>
+                    </div><br>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Desktop <i class="fa fa-desktop" style="color: #003366;"></i></td>
+                    <td scope="row">{{desktop}}</td>
+                </tr>
+                <tr>
+                    <td>Tablet <i class="fa fa-tablet" style="color: #003366;"></i></td>
+                    <td scope="row">{{tablet}}</td>
+                </tr>
+                <tr>
+                    <td>Mobile <i class="fa fa-mobile-phone" style="color: #003366;"></i></td>
+                    <td scope="row">{{mobile}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="bg-light rounded-top" style="color: #025091;">
+            <table class="table">
+                <thead class="bg-light">
+                    <tr>
+                        <th scope="col"><div class="scrollable text-center">{{inputurl}}</div></th>
+                    </tr>
+                    <tr>
+                        <th scope="col"><div class="scrollable text-center">{{outputurl}}</div></th>
+                    </tr>
+                </thead>
+            </table>
+            <table class="table bg-light table-striped ">
+                <thead>
+                    <tr>
+                        <br>
+                        <th scope="col">Locations</th>
+                        <th scope="col">Clicks</th>
+                        <th scope="col">Unique Visitors</th>
+                        <th scope="col">Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for data in data%}
+                        <tr>
+                            <td><div class="scrollable">{{data.location}}</div></td>
+                            <td><div class="scrollable">{{data.clicks}}</div></td>
+                            <td><div class="scrollable">{{data.visitor}}</div></td>
+                            <td><div class="scrollable">{{data.perc}}%</div></td>
+                        </tr>
+                    {%endfor%}
+                    {%if not total%}
+                    <tr>
+                        <td class="text-center"></td>
+                        <td>
+                            <div class="row">
+                                <td><div class="text-center">No Click yet</div></td>
+                            </div>
+                        </td>
+                        <td class="text-center"></td>
+                    </tr>
+                {%endif%}
+                </tbody>
+            </table>
+            {%if total%}
+                <div class="text-center">
+                    <a href="{%url 'visitors' id%}" style="text-decoration:none; color: #025091; font-weight: bold;">View All Visitors</a>
+                </div>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{%endblock content%}

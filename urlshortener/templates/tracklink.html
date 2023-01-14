@@ -1,0 +1,180 @@
+{%extends 'main.html'%}
+{%load static%}
+{%block content%}
+<nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <div class="container-fluid">
+        <a href="{%url 'profile'%}" class="navbar-brand btn" style="background-color: #003366; color: white;"><i class="fa fa-arrow-left"></i></a>
+        <h3>Overview</h3>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <div class="nav-link active" aria-current="page">Current plan: <span style="color: #003366; font-weight: bold;">{{plans}}</span> {%if subscribed%}{%else%}<span><a href="" class="btn btn-sm btn-outline-secondary rounded">Upgrade <i class="fa fa-rocket" style="color:#003366;"></i></a></span>{%endif%}</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{%url 'logout'%}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav><br>
+<style>
+    @media screen and (max-width:767px){
+    }
+    div.scrollable{
+        width: auto;
+        height: 100%;
+        word-break: break-word;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="page-content pb-2 pt-2 bg-light rounded mb-4">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <div class="text-center"><i class="fas fa-users fa-2x" style="color: #7492b9;"></i></div>
+                    <div class="d-flex justify-content-around pt-1">
+                        <button class="btn btn-sm text-white" style="background-color:#003366;pointer-events: none;">
+                            Total Visitors <span class="badge" style="background-color: white; color: #003366;">{{total_visitors}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="page-content pb-2 pt-2 bg-light rounded mb-4">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <div class="text-center"><i class="fa fa-link fa-2x" style="color: #003366;"></i></div>
+                    <div class="d-flex justify-content-around pt-1">
+                        <button class="text-white btn btn-sm" style="background-color:#003366; pointer-events: none;">
+                            Total Links Created 
+                            <span class="badge" style="background-color: white; color: #003366;">{{total_links}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="page-content pb-2 pt-2 bg-light rounded mb-4">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <div class="text-center"><i class="fa fa-hand-pointer fa-2x" style="color: #025091;"></i></div>
+                    <div class="d-flex justify-content-around pt-1">
+                        <button class="text-white btn btn-sm" style="background-color:#003366; pointer-events: none;">
+                            Total Clicks <span class="badge" style="background-color: white; color: #003366;">{{total_clicks}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="pb-1 pt-1 bg-light rounded mb-4">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <table class="table bg-light">
+                        <thead>
+                            <tr>
+                                <div class="d-flex justify-content-around">
+                                    <button class="text-white btn btn-sm" style="background-color:#003366; pointer-events: none;">
+                                        Device Summary 
+                                    </div>
+                                </div><br>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Desktop <i class="fa fa-desktop" style="color: #003366;"></i> </td>
+                                <th scope="row">{{desktop}}</th>
+                            </tr>
+                            <tr>
+                                <td>Tablet <i class="fa fa-tablet" style="color: #003366;"></i> </td>
+                                <th scope="row">{{tablet}}</th>
+                            </tr>
+                            <tr>
+                                <td>Mobile <i class="fa fa-mobile-phone" style="color: #003366;"></i> </td>
+                                <th scope="row">{{mobile}}</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        {%if data%}
+            <table class="table bg-light table-striped">
+                <thead>
+                    <tr>
+                        <div class="d-flex justify-content-around bg-light pt-2 rounded-top">
+                            <div class="text-white btn btn-sm" style="background-color:#003366; pointer-events: none;">
+                                Shortened Links 
+                            </div>
+                        </div>
+                    </tr>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Link</th>
+                        <th scope="col">Shortened Link</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for data in data%}
+                        <tr>
+                            <td><div>{{forloop.counter}}</div></td>
+                            <td><div id="9999" class="scrollable item-to-copy">{{data.inputURL}} </div></td>
+                            <td><div class="scrollable"><a href="{{data.outputURL}}">{{data.outputURL}}</a></div></td>
+                            <td><div class="scrollable"><a href="{%url 'insights' data.id%}" style="text-decoration:none; color: #025091; font-weight: bold;">View insights</a></div></td>
+                        </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        {%else%}
+            <h6 class="bg-white text-center rounded">{{empty}}</h6>
+        {%endif%}
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        {%if cdata%}
+            <table class="table bg-light table-striped">
+                <thead>
+                    <tr>
+                        <div class="d-flex justify-content-around bg-light pt-2 rounded-top">
+                            <div class="text-white btn btn-sm" style="background-color:#003366; pointer-events: none;">
+                                Customized Links 
+                            </div>
+                        </div>
+                    </tr>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Link</th>
+                        <th scope="col">Customized Link</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for data in cdata%}
+                        <tr>
+                            <td><div>{{forloop.counter}}</div></td>
+                            <td><div class="scrollable">{{data.inputURL}}</div></td>
+                            <td><div class="scrollable"><a href="{{data.outputURL}}">{{data.outputURL}}</a></div></td>
+                            <td><div class="scrollable"><a href="{%url 'insights' data.id%}" style="text-decoration:none; color:#025091; font-weight: bold;">View insights</a></div></td>
+                        </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        {%else%}
+            <h6 class="bg-white text-center rounded">{{cempty}}</h6>
+        {%endif%}
+    </div>
+</div>
+{%endblock content%}

@@ -1,0 +1,221 @@
+{%extends 'main.html'%}
+{%load static%}
+{%block content%}
+<style>
+    .copy:hover{
+        color: white;
+    }
+    .gs:hover{
+        background-color:#003366;
+        color: white;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <div class="container-fluid">
+        <h3 style="color: grey; font-family: cursive, 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Welcome to Fupi URL Shortener</h3>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{%url 'signup'%}">Signup</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{%url 'login'%}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="pt-2">
+    <h3 style="color: gainsboro;">Customize, Brand and Track your URL Links <a href="{%url 'signup'%}" class="btn btn-sm btn-outline-white rounded-pill" style="background-color: #003366; color: gainsboro;">Get Started For Free</a></h3>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="page-content pb-1 pt-1 bg-light rounded mb-4">
+            <div class="post" style="text-align:justify; text-justify:inter-word;">
+                <table class="table bg-light">
+                    <thead>
+                        <tr>
+                            <div class="d-flex justify-content-around">
+                                <a href="{%url 'signup'%}" class="text-white btn btn-sm" style="background-color:#003366;">
+                                    Devices
+                                </a>
+                            </div>
+                            <br>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Desktop <i class="fa fa-desktop" style="color: #003366;"></i> </td>
+                            <th scope="row">{{total_desktop}}</th>
+                        </tr>
+                        <tr>
+                            <td>Tablet <i class="fa fa-tablet" style="color: #003366;"></i> </td>
+                            <th scope="row">{{total_tablet}}</th>
+                        </tr>
+                        <tr>
+                            <td>Mobile <i class="fa fa-mobile-phone" style="color: #003366;"></i> </td>
+                            <th scope="row">{{total_mobile}}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col result"><!--RESULT PLACEHOLDER--></div><br>
+        <div class="rounded navbar bg-light">
+            <div class="container-fluid align-items-center justify-content-center">
+                <form id="shortenurl" action="{%url 'shortener' %}" method="POST" class="text-center">
+                    {%csrf_token%}
+                    <input required id="inputurl" class="form-control mt-2 me-2" type="text" placeholder="Paste or type your link">
+                    <button id="shorten" class="btn btn-sm text-white mt-2" style="background-color: #003366;" type="submit">Shorten  <i class="fa fa-sync shorten-icon"></i></button>
+                </form>
+            </div>
+            <p class="card-footer text-muted ps-3 pe-3"><small>By clicking the Shorten button, you agree to our <span><a href="" style="color: #003366; text-decoration: none;"> Terms of Service, Privacy Policy and Acceptable Use Policy.</a></span></small> </p>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+<br><br>
+<div class="row">
+    <div class="col-md-3">
+        <div class="page-content pb-4 pt-4 bg-light rounded mb-4">
+            <div class="toast-body ps-2 pe-2">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <p class="text-center"><i class="fa fa-link fa-3x" style="color: #003366;"></i></p>
+                    <div class="d-flex justify-content-around pt-4">
+                        <a href="{%url 'signup'%}" class="btn btn-sm text-white rounded" style="background-color:#003366;">
+                            Total Links Created <span class="badge" style="background-color: white; color: #003366;">{{total_links_created}}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="page-content pb-4 pt-4 bg-light rounded mb-4">
+            <div class="toast-body ps-2 pe-2">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <p class="text-center"><i class="fa fa-hand-pointer fa-3x" style="color: #025091;"></i></p>
+                    <div class="d-flex justify-content-around pt-4">
+                        <a href="{%url 'signup'%}" class="btn btn-sm text-white rounded" style="background-color:#003366;">
+                            Total Clicks <span class="badge" style="background-color: white; color: #003366;">{{total_clicks}}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="page-content pb-4 pt-4 bg-light rounded mb-4">
+            <div class="toast-body ps-2 pe-2">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <p class="text-center"><i class="fas fa-users fa-3x" style="color: #7492b9;"></i></p>
+                    <div class="d-flex justify-content-around pt-4">
+                        <a href="{%url 'signup'%}" class="btn btn-sm text-white rounded" style="background-color:#003366;">
+                            Total Visitors <span class="badge" style="background-color: white; color: #003366;">{{total_visitors}}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="page-content pb-4 pt-4 bg-light rounded mb-4">
+            <div class="toast-body ps-2 pe-2">
+                <div class="post" style="text-align:justify; text-justify:inter-word;">
+                    <p class="text-center"><i class="fas fa-globe fa-3x" style="color: #003366;"></i></p>
+                    <div class="d-flex justify-content-around pt-4">
+                        <a class="btn btn-sm text-white rounded" style="background-color:#003366;">
+                            Countries <span class="badge" style="background-color: white; color: #003366;">58</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function isLinkValid(str){
+        regexp=/^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[A-Za-z\u00a1-\uffff0-9]-*)*[A-Za-z\u00a1-\uffff0-9]+)(?:\.(?:[A-Za-z\u00a1-\uffff0-9]-*)*[A-Za-z\u00a1-\uffff0-9]+)*(?:\.(?:[A-Za-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+        if(regexp.test(str)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    // SHORTNER
+    $(document).ready(function(){
+        $(document).on('submit','#shortenurl',function(e){
+            e.preventDefault()
+            const inputurl=$('#inputurl').val();
+            const is_Valid=isLinkValid(inputurl)
+            if(inputurl&&is_Valid){
+                $.ajax({
+                    type:'POST',
+                    url:'{%url "shortener"%}',
+                    data:{
+                        inputurl:$('#inputurl').val(),
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    beforeSend:function(){
+                        $('#shorten').attr('disabled',true);
+                        $('.shorten-icon').addClass('fa-spin');
+                    },
+                    success:function(data){
+                        urlID=data.id
+                        if(urlID!=0){
+                            $('#shorten').attr('disabled',false);
+                            $('.shorten-icon').removeClass('fa-spin');
+                            $('.result').append(
+                                `<div class="card text-center mt-4 mb-4">
+                                    <div class="card-header">${inputurl}</div>
+                                    <div class="card-body">
+                                        <p id="${urlID}" class="item-to-copy text-primary mb-1 mt-2">${data.result}</p>
+                                        <button onclick="copyToClipboard('${urlID}')" class="copy btn btn-sm btn-outline-secondary rounded" style="font-weight:bold;">Copy <i class="fa fa-copy"></i></button>
+                                    </div>
+                                    <div class="card-footer text-muted">Get more from your link and boost your conversation rate. Be able to track, manage, capture and retarget everyone <a href="{%url 'signup'%}" class="gs btn btn-sm btn-outline-white rounded-pill" style="display:inline-block; font-weight:bold; background-image: linear-gradient(#003366, #7492b9, #025091); color: gainsboro;">SignUp Now <i class="fa fa-rocket"></i> </a></div>
+                                </div>`
+                            )
+                        }else{
+                            $('#shorten').attr('disabled',false);
+                            $('.shorten-icon').removeClass('fa-spin');
+                            $('.result').append(
+                            `<div class="card text-center">
+                                <div class="card-header">${data.inputURL}</div>
+                                <div class="card-body">
+                                    <p id="${urlID}" style="color:#ff0268;" class="item-to-copy mb-1 mt-2">${data.result}</p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0" style="border:solid #7492b9;">`)
+                        }
+                    }
+                });
+                document.getElementById('inputurl').value=''
+                return true;
+            }
+            alert('This is an invalid URL! Unable to shorten the link.')
+            document.getElementById('inputurl').value=''
+            return false;
+        });
+    });
+    // COPY TO CLIPBOARD
+    function copyToClipboard(itemtocopy){
+        const str=document.getElementById(itemtocopy).innerText
+        const el=document.createElement('textarea')
+        el.value=str
+        el.setAttribute('readonly','')
+        el.style.position='absolute'
+        el.style.left='-9999px'
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+        alert(`Copied: ${str}`)
+    }
+</script>
+{%endblock content%}

@@ -1,0 +1,10 @@
+*.pyc
+.vscode
+__pycache__
+.venv
+myvenv
+.DS_Store
+/static
+static/
+data.json
+.env

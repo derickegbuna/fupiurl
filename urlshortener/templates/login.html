@@ -1,0 +1,28 @@
+{%extends 'main.html'%}
+{%load static%}
+{%block content%}
+<h2 class="text-center" style="color: gainsboro;">Welcome to Fupi URLs Shortener</h2>
+<section class="container">
+  <div class="row">
+    <div class="col-md-6"><br>
+      <form method="POST" action="" class="row g-3 border rounded" style="background-color:#ffff;">
+        {%csrf_token%}
+        {%for message in messages%}
+          <p class="text-white text-center pb-0" style="background-color:#003366;">{{message}}</p>
+        {%endfor%}
+        <div class="col-md-6"><input id="username" type="username" name="username" class="form-control" placeholder="Brand Name or Username" required></div>
+        <div class="col-md-6"><input id="password" type="password" name="password" class="form-control" placeholder="Password" required></div>
+        <div class="col-12 pb-4">
+          <input type="submit" onclick="" value="Login" class="btn btn-outline-light " style="background-color:#003366;">
+          <a href="" style="color:#ff0268;">Forgot Password?</a>
+        </div>
+      </form>
+      <div class="pb-4"><br>
+        <h6 class="d-inline-block text-white">Don't have an account yet?</h6>
+        <a href="{%url 'signup'%}"><button type="button" class="btn btn-outline-light " style="background-color:#7492b9;">Signup Now</button></a>
+      </div>
+    </div>
+  </div>
+</section>
+{%endblock content%}
+

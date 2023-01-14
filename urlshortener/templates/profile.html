@@ -1,0 +1,237 @@
+{%extends 'main.html'%}
+{%load static%}
+{%block content%}
+<style>
+    .gs:hover{
+        background-color:#003366;
+        color: white;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <div class="container-fluid">
+        <a href="" class="navbar-brand"><h3 style="color: grey; font-family: cursive, 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Welcome to Fupi URL Shortener</h3></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <div class="nav-link active" aria-current="page">Current plan: <span style="color: #003366; font-weight: bold;">{{plans}} </span> {%if subscribed%}{%else%}<span><a href="" class="btn btn-sm btn-outline-secondary rounded">Upgrade <i class="fa fa-rocket" style="color:#003366;"></i></a></span>{%endif%}</div>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{%url 'tracklink'%}">Track your links</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{%url 'logout'%}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="row">
+    <div class="col-md-4 pt-2">
+        <div class="container-fluid">
+            <button class="btn btn-outline-light mb-2" data-bs-toggle="collapse" data-bs-target="#customizeText" aria-controls="customizeText" aria-expanded="false" aria-label="Toggle navigation">Customize your link</button>
+            <div class="collapse navbar-collapse rounded" id="customizeText">
+                <h3 class="bg-light rounded-top text-center" style="color:#003366;">Brand your link</h3>
+                <div id="customizeResult"></div>
+                <div class="d-flex align-items-center bg-light justify-content-center rounded-bottom">
+                    <div class="navbar">
+                        <div class="container-fluid align-items-center justify-content-center mt-4">
+                            <form id="customizeurl" action="{%url 'customize' %}" method="POST" class="text-center">    
+                                {%csrf_token%}
+                                <input required id="customizeinputurl" class="form-control me-2" type="text" placeholder="Paste or type your link">
+                                <p class="mt-4 mb-2">Customize to:</p>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text pe-0 rounded-0 " id="basic-addon3">{{customURL}}</span></div>
+                                    <input required id="customizeoutputurl" class="form-control ps-0" type="text" aria-describedby="basic-addon3" placeholder="brandname">
+                                </div>
+                                <button id="customize" class="btn btn-sm text-white mt-2" style="background-color: #003366;" type="submit">Customize  <i class="fa fa-sync customize-icon"></i></button>
+                            </form>
+                        </div>
+                        <p class="card-footer text-muted ps-3 pe-3"><small>By clicking the Customize button, you agree to our <span><a href="" style="color: #003366; text-decoration: none;"> Terms of Service, Privacy Policy and Acceptable Use Policy.</a></span></small> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+    <div class="col-md-4">
+        <div class="result mt-4"></div>
+        <div class="mt-4">
+            <div class="rounded navbar bg-light">
+                <div class="container-fluid align-items-center justify-content-center">
+                    <form id="shortenurl" action="{%url 'shortener' %}" method="POST" class="text-center">
+                        {%csrf_token%}
+                        <input id="inputurl" class="form-control mt-2 me-2" type="text" placeholder="Paste or type your link" required>
+                        <button id="shorten" class="btn btn-sm text-white mt-2" style="background-color: #003366;" type="submit">Shorten  <i class="fa fa-sync shorten-icon"></i></button>
+                    </form>
+                </div>
+                <p class="card-footer text-muted ps-3 pe-3"><small>By clicking the Shorten button, you agree to our <span><a href="" style="color: #003366; text-decoration: none;"> Terms of Service, Privacy Policy and Acceptable Use Policy.</a></span></small> </p>
+            </div>
+        </div>
+    </div><br>
+    <div class="col-md-4"></div><br>
+</div>
+<script>
+    function isLinkValid(str){
+        regexp=/^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[A-Za-z\u00a1-\uffff0-9]-*)*[A-Za-z\u00a1-\uffff0-9]+)(?:\.(?:[A-Za-z\u00a1-\uffff0-9]-*)*[A-Za-z\u00a1-\uffff0-9]+)*(?:\.(?:[A-Za-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+        if(regexp.test(str)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    // NORMAL SHORTNER
+    $(document).ready(function(){
+        $(document).on('submit','#shortenurl',function(e){
+            e.preventDefault()
+            const inputurl=$('#inputurl').val();
+            const is_Valid=isLinkValid(inputurl);
+            if(inputurl&&is_Valid){
+                $.ajax({
+                    type:'POST',
+                    url:'{%url "shortener"%}',
+                    data:{
+                        inputurl:inputurl,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    beforeSend:function(){
+                        $('#shorten').attr('disabled',true);
+                        $('.shorten-icon').addClass('fa-spin');
+                    },
+                    success:function(data){
+                        urlID=data.id
+                        if(urlID!=0){
+                            $('#shorten').attr('disabled',false);
+                            $('.shorten-icon').removeClass('fa-spin');
+                            $('.result').append(
+                                `<div class="card text-center mt-4 mb-4">
+                                    <div class="card-header">${data.inputURL}</div>
+                                        <div class="card-body">
+                                            <p id="${urlID}" class="item-to-copy text-primary mb-1 mt-2">${data.result}</p>
+                                            <button onclick="copyToClipboard('${urlID}')" class="copy btn btn-sm btn-outline-secondary rounded" style="font-weight:bold;">Copy <i class="fa fa-copy"></i></button>
+                                        </div>
+                                </div>`
+                            )
+                        }else{
+                            $('#shorten').attr('disabled',false);
+                            $('.shorten-icon').removeClass('fa-spin');
+                            $('.result').append(
+                            `<div class="card text-center">
+                                <div class="card-header">${data.inputURL}</div>
+                                <div class="card-body">
+                                    <p id="${urlID}" style="color:#ff0268;" class="item-to-copy mb-1 mt-2">${data.result}</p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0" style="border:solid #7492b9;">`)
+                        }
+                    }
+                });
+                document.getElementById('inputurl').value=''
+                return true;
+            }
+            alert('This is an invalid URL! Unable to shorten the link.')
+            document.getElementById('inputurl').value=''
+            return false;
+        });
+    });
+    // CUSTOMIZE SHORTENER
+    $(document).ready(function(){
+        $(document).on('submit','#customizeurl',function(e){
+            e.preventDefault()
+            const customizeinputURL=$('#customizeinputurl').val();
+            const customizeoutputURL=$('#customizeoutputurl').val();
+            const is_Valid=isLinkValid(customizeinputURL);
+            if(customizeinputURL&&customizeoutputURL&&is_Valid){
+                $.ajax({
+                    type:'POST',
+                    url:'{%url "customize"%}',
+                    data:{
+                        customizeinputURL:customizeinputURL,
+                        customizeoutputURL:customizeoutputURL,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    beforeSend:function(){
+                        $('#customize').attr('disabled',true);
+                        $('.customize-icon').addClass('fa-spin');
+                    },
+                    success:function(data){
+                        urlID=data.ID
+                        $('#customize').attr('disabled',false);
+                        $('.customize-icon').removeClass('fa-spin');
+                        if(data.ID==00){
+                            $('#customizeResult').append(
+                            `<div class="card text-center">
+                                <div class="card-header">${data.inputURL}</div>
+                                <div class="card-body">
+                                    <p style="color:#ff0268;" class="mb-1 mt-2">${data.result}</p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0" style="border:solid #7492b9;">`)
+                        }else if(data.validID==1){
+                                $('#customizeResult').append(
+                                `<div class="card text-center ">
+                                    <div class="card-header">${data.inputURL}</div>
+                                    <div class="card-body">
+                                        <p id="${urlID}" class="item-to-copy text-primary mb-1 mt-2">${data.outputURL}</p>
+                                        <button onclick="copyToClipboard('${urlID}')" class="copy btn btn-sm btn-outline-secondary rounded" style="font-weight:bold;">Copy <i class="fa fa-copy"></i></button>
+                                    </div>
+                                </div>
+                                <hr class="mt-0 mb-0" style="border:solid #7492b9;">
+                            `)
+                        }else if(data.validID==0){
+                            $('#customizeResult').append(
+                            `<div class="card text-center">
+                                <div class="card-header">${data.inputURL}</div>
+                                <div class="card-body">
+                                    <p style="color:#ff0268;" class="mb-1 mt-2">${data.outputURL}</p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0" style="border:solid #7492b9;">`)
+                        }else if(data.validID=='inputERROR'){
+                            $('#customizeResult').append(
+                            `<div class="card text-center">
+                                <div class="card-header" style="color:#ff0268;">${data.outputURL}</div>
+                                <div class="card-body">
+                                    <p class="text-secondary mb-1 mt-2">${data.inputURL}</p>
+                                    <h3>${data.msg}</h3>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0" style="border:solid #7492b9;">`)
+                        } else{
+                            $('#customizeResult').append(
+                            `<div class="card text-center">
+                                <div class="card-header">${data.inputURL}</div>
+                                <div class="card-body">
+                                    <p style="color:#ff0268;" class="mb-1 mt-2"><span class="text-secondary">"${data.ID}"</span> ${data.outputURL}</p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0" style="border:solid #7492b9;">`)
+                        } 
+                    }
+                });
+                document.getElementById('customizeinputurl').value=''
+                document.getElementById('customizeoutputurl').value=''
+                return true;
+            }
+            alert('This is an invalid URL! Unable to customize the link.')
+            document.getElementById('customizeinputurl').value=''
+            document.getElementById('customizeoutputurl').value=''
+            return false;
+        });
+    });
+    // COPY TO CLIPBOARD
+    function copyToClipboard(containerid){
+        const textarea=document.createElement('textarea')
+        textarea.id='temp_element'
+        textarea.style.height=0
+        document.body.appendChild(textarea)
+        textarea.value=document.getElementById(containerid).innerText
+        const selector=document.querySelector('#temp_element')
+        selector.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        alert(`Copied: ${textarea.value}`)
+    }
+</script>
+{%endblock content%}
